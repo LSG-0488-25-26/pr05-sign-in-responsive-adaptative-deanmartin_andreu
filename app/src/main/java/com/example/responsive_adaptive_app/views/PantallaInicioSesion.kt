@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.responsive_adaptive_app.R
 import androidx.compose.material3.TextFieldDefaults
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun PantallaInicioSesion (navController: NavController) {
@@ -40,6 +42,7 @@ fun PantallaInicioSesion (navController: NavController) {
     var emailUsuario by rememberSaveable { mutableStateOf("") }
     var contrasena by rememberSaveable { mutableStateOf("") }
     val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -105,7 +108,14 @@ fun PantallaInicioSesion (navController: NavController) {
 
             Button(
                 onClick = {
-                    if(emailUsuario.isNotBlank() && contrasena.isNotBlank()) {}
+                    if(emailUsuario.isBlank() || contrasena.isBlank()) {
+                        Toast.makeText(context,
+                            "Rellena todos los campos para iniciar sesión.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+
+                    }
                 },
                 enabled = botonHabilitado,
                 modifier = Modifier
@@ -133,7 +143,7 @@ fun PantallaInicioSesion (navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = {},
+                onClick = {navController.navigate(Routes.RegistroUsuario.route)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(42.dp)
