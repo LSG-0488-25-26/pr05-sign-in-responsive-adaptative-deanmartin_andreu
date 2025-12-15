@@ -16,9 +16,11 @@ import com.example.responsive_adaptive_app.views.Routes
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.responsive_adaptive_app.viewModel.formularioUser
 import com.example.responsive_adaptive_app.views.PantallaRegistroUsuario
 import com.example.responsive_adaptive_app.views.PantallaInicioSesion
 import com.example.responsive_adaptive_app.views.PantallaConfirm
+import androidx.lifecycle.viewmodel.compose.viewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +29,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             Responsive_Adaptive_AppTheme {
                 val navigationController = rememberNavController()
+                val formularioUsuario: formularioUser = viewModel()
 
                 NavHost(
                     navController = navigationController,
                     startDestination = Routes.InicioSesion.route
                 ) {
                     composable(Routes.InicioSesion.route) {
-                        PantallaInicioSesion(navigationController)
+                        PantallaInicioSesion(navigationController, formularioUsuario)
                     }
                     composable(Routes.RegistroUsuario.route) {
                         PantallaRegistroUsuario(navigationController)

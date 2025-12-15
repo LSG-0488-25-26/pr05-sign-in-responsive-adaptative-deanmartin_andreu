@@ -35,14 +35,18 @@ import com.example.responsive_adaptive_app.R
 import androidx.compose.material3.TextFieldDefaults
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import com.example.responsive_adaptive_app.viewModel.formularioUser
 
 @Composable
-fun PantallaInicioSesion (navController: NavController) {
+fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser) {
 
     var emailUsuario by rememberSaveable { mutableStateOf("") }
     var contrasena by rememberSaveable { mutableStateOf("") }
     val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
-    val context = LocalContext.current
+    val usuarioInexistente = LocalContext.current
+
+    val validador = viewModel.login(emailUsuario, contrasena)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -108,13 +112,14 @@ fun PantallaInicioSesion (navController: NavController) {
 
             Button(
                 onClick = {
-                    if(emailUsuario.isBlank() || contrasena.isBlank()) {
-                        Toast.makeText(context,
-                            "Rellena todos los campos para iniciar sesión.",
+                    if (validador) {
+                        navController.navigate(Routes.Confirm.route)
+                    } else {
+                        Toast.makeText(
+                            usuarioInexistente,
+                            "Usuario no encontrado.",
                             Toast.LENGTH_LONG
                         ).show()
-                    } else {
-
                     }
                 },
                 enabled = botonHabilitado,

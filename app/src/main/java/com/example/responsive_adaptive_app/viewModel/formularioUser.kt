@@ -23,4 +23,21 @@ class formularioUser: ViewModel() {
         )
     )
     val formulario: LiveData<Datos> = _formulario
+
+    fun login(emailUsuario: String, contrasena: String): Boolean {
+        val datosUser = _formulario.value
+
+        if (datosUser == null) {
+            return false
+        }
+
+        val userCorrecto = datosUser.email == emailUsuario || datosUser.nombreUsuario == emailUsuario
+        val contrasenaCorrecto = datosUser.contrasena == contrasena
+
+        if (userCorrecto && contrasenaCorrecto) {
+            return true
+        } else {
+            return false
+        }
+    }
 }
