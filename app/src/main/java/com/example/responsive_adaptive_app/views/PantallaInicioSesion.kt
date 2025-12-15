@@ -37,9 +37,10 @@ import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.responsive_adaptive_app.viewModel.formularioUser
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 
 @Composable
-fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser) {
+fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
 
     var emailUsuario by rememberSaveable { mutableStateOf("") }
     var contrasena by rememberSaveable { mutableStateOf("") }
