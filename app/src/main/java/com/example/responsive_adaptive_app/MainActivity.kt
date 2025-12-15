@@ -12,36 +12,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.responsive_adaptive_app.ui.theme.Responsive_Adaptive_AppTheme
-
+import com.example.responsive_adaptive_app.views.Routes
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.responsive_adaptive_app.views.PantallaRegistroUsuario
+import com.example.responsive_adaptive_app.views.PantallaInicioSesion
+import com.example.responsive_adaptive_app.views.PantallaConfirm
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             Responsive_Adaptive_AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navigationController = rememberNavController()
+
+                NavHost(
+                    navController = navigationController,
+                    startDestination = Routes.InicioSesion.route
+                ) {
+                    composable(Routes.InicioSesion.route) {
+                        PantallaInicioSesion(navigationController)
+                    }
+                    composable(Routes.RegistroUsuario.route) {
+                        PantallaRegistroUsuario(navigationController)
+                    }
+                    composable(Routes.Confirm.route) {
+                        PantallaConfirm(navigationController)
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Responsive_Adaptive_AppTheme {
-        Greeting("Android")
     }
 }
