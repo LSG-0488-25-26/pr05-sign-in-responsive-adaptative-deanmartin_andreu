@@ -35,12 +35,22 @@ import com.example.responsive_adaptive_app.R
 import androidx.compose.material3.TextFieldDefaults
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
 import com.example.responsive_adaptive_app.viewModel.formularioUser
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 
 @Composable
 fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+    when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> InicioSesionCompacto(navController, viewModel, windowSize)
+        WindowWidthSizeClass.Medium -> InicioSesionMedium(navController, viewModel, windowSize)
+        WindowWidthSizeClass.Expanded -> InicioSesionExpanded(navController, viewModel, windowSize)
+        else -> InicioSesionCompacto(navController, viewModel, windowSize)
+    }
+}
+
+@Composable
+fun InicioSesionCompacto (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
 
     var emailUsuario by rememberSaveable { mutableStateOf("") }
     var contrasena by rememberSaveable { mutableStateOf("") }
@@ -164,4 +174,14 @@ fun PantallaInicioSesion (navController: NavController, viewModel: formularioUse
             }
         }
     }
+}
+
+@Composable
+fun InicioSesionMedium (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+
+}
+
+@Composable
+fun InicioSesionExpanded (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+
 }
