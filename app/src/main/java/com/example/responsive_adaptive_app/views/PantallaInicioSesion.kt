@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -41,6 +40,9 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
@@ -62,13 +64,27 @@ fun InicioSesionCompacto (navController: NavController, viewModel: formularioUse
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Banner()
-        FormularioLogin(navController = navController, viewModel = viewModel, modifier = Modifier.fillMaxSize(1f))
+        FormularioLogin(navController = navController, viewModel = viewModel, modifier = Modifier.fillMaxSize(1f), windowSize = windowSize)
     }
 }
 
 @Composable
 fun InicioSesionMedium (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
-
+    Column(modifier = Modifier.fillMaxSize()) {
+        Banner()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp, vertical = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            FormularioLogin(
+                navController = navController,
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxWidth(1f
+            ),windowSize = windowSize)
+        }
+    }
 }
 
 @Composable
@@ -92,7 +108,7 @@ fun InicioSesionExpanded (navController: NavController, viewModel: formularioUse
             contentAlignment = Alignment.Center
         ) {
             FormularioLogin(navController = navController,
-                viewModel = viewModel, modifier = Modifier.fillMaxWidth(0.7f)
+                viewModel = viewModel, modifier = Modifier.fillMaxWidth(0.7f), windowSize = windowSize
             )
         }
     }
@@ -117,107 +133,220 @@ private fun Banner() {
         )
     }
 }
-
 @Composable
-private fun FormularioLogin(navController: NavController, viewModel: formularioUser, modifier: Modifier) {
-    var emailUsuario by rememberSaveable { mutableStateOf("") }
-    var contrasena by rememberSaveable { mutableStateOf("") }
-    val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
-    val usuarioInexistente = LocalContext.current
+private fun FormularioLogin(
+    navController: NavController,
+    viewModel: formularioUser,
+    modifier: Modifier,
+    windowSize: WindowSizeClass
+) {
+    if (windowSize.widthSizeClass == WindowWidthSizeClass.Medium) {
 
-    val validador = viewModel.login(emailUsuario, contrasena)
+        var emailUsuario by rememberSaveable { mutableStateOf("") }
+        var contrasena by rememberSaveable { mutableStateOf("") }
+        val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
+        val usuarioInexistente = LocalContext.current
+        val validador = viewModel.login(emailUsuario, contrasena)
 
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextField(
-            value=emailUsuario,
-            onValueChange = {emailUsuario=it},
-            label = {Text("Escribe tu email o nombre de usuario")},
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Black,
-                unfocusedIndicatorColor = Color.DarkGray
-            )
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        TextField(
-            value = contrasena,
-            onValueChange = { contrasena = it },
-            label = { Text("Contraseña") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Black,
-                unfocusedIndicatorColor = Color.DarkGray
-            )
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                if (validador) {
-                    navController.navigate(Routes.Confirm.route)
-                } else {
-                    Toast.makeText(
-                        usuarioInexistente,
-                        "Usuario no encontrado.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            },
-            enabled = botonHabilitado,
-            modifier = Modifier
+        Column(
+            modifier = modifier
                 .fillMaxWidth()
-                .height(42.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White,
-                disabledContainerColor = Color.DarkGray,
-                disabledContentColor = Color.LightGray,
-            )
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Iniciar Sesión", fontSize = 16.sp)
+            TextField(
+                value = emailUsuario,
+                onValueChange = { emailUsuario = it },
+                label = {Text("Escribe tu email o nombre de usuario", fontSize = 16.sp)},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.DarkGray
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            TextField(
+                value = contrasena,
+                onValueChange = { contrasena = it },
+                label = {Text("Contraseña", fontSize = 16.sp)},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.DarkGray
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    if (validador) {
+                        navController.navigate(Routes.Confirm.route)
+                    } else {
+                        Toast.makeText(
+                            usuarioInexistente,
+                            "Usuario no encontrado.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                enabled = botonHabilitado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.DarkGray,
+                    disabledContentColor = Color.LightGray,
+                )
+            ) {
+                Text(text = "Iniciar Sesión", fontSize = 18.sp)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "¿No tienes cuenta? Pulsa aqui para registrarte.",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = { navController.navigate(Routes.RegistroUsuario.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(5.dp)),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black,
+                )
+            ) {
+                Text("Registrarse", fontSize = 18.sp)
+            }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+    } else {
 
-        Text(
-            text = "¿No tienes cuenta? Pulsa aqui para registrarte.",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+        var emailUsuario by rememberSaveable { mutableStateOf("") }
+        var contrasena by rememberSaveable { mutableStateOf("") }
+        val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
+        val usuarioInexistente = LocalContext.current
+        val validador = viewModel.login(emailUsuario, contrasena)
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {navController.navigate(Routes.RegistroUsuario.route)},
-            modifier = Modifier
+        Column(
+            modifier = modifier
                 .fillMaxWidth()
-                .height(42.dp)
-                .shadow(elevation = 2.dp, shape = RoundedCornerShape(5.dp)),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black,
-            )
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Registrarse")
+            TextField(
+                value = emailUsuario,
+                onValueChange = { emailUsuario = it },
+                label = { Text("Escribe tu email o nombre de usuario") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.DarkGray
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextField(
+                value = contrasena,
+                onValueChange = { contrasena = it },
+                label = { Text("Contraseña") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.DarkGray
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    if (validador) {
+                        navController.navigate(Routes.Confirm.route)
+                    } else {
+                        Toast.makeText(
+                            usuarioInexistente,
+                            "Usuario no encontrado.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                enabled = botonHabilitado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(42.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.DarkGray,
+                    disabledContentColor = Color.LightGray,
+                )
+            ) {
+                Text(text = "Iniciar Sesión", fontSize = 16.sp)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "¿No tienes cuenta? Pulsa aqui para registrarte.",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = { navController.navigate(Routes.RegistroUsuario.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(42.dp)
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(5.dp)),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black,
+                )
+            ) {
+                Text("Registrarse")
+            }
         }
     }
 }
