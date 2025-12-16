@@ -43,19 +43,22 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.runtime.MutableState
 
 @Composable
 fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+    val emailUsuario = rememberSaveable { mutableStateOf("") }
+    val contrasena = rememberSaveable { mutableStateOf("") }
     when (windowSize.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> InicioSesionCompacto(navController, viewModel, windowSize)
-        WindowWidthSizeClass.Medium -> InicioSesionMedium(navController, viewModel, windowSize)
-        WindowWidthSizeClass.Expanded -> InicioSesionExpanded(navController, viewModel, windowSize)
-        else -> InicioSesionCompacto(navController, viewModel, windowSize)
+        WindowWidthSizeClass.Compact -> InicioSesionCompacto(navController, viewModel, windowSize, emailUsuario, contrasena)
+        WindowWidthSizeClass.Medium -> InicioSesionMedium(navController, viewModel, windowSize, emailUsuario, contrasena)
+        WindowWidthSizeClass.Expanded -> InicioSesionExpanded(navController, viewModel, windowSize, emailUsuario, contrasena)
+        else -> InicioSesionCompacto(navController, viewModel, windowSize, emailUsuario, contrasena)
     }
 }
 
 @Composable
-fun InicioSesionCompacto (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+fun InicioSesionCompacto (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass, emailUsuario: MutableState<String>, contrasena: MutableState<String>) {
     Column(
         modifier = Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -64,17 +67,19 @@ fun InicioSesionCompacto (navController: NavController, viewModel: formularioUse
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Banner()
-        FormularioLogin(navController = navController, viewModel = viewModel, modifier = Modifier.fillMaxSize(1f), windowSize = windowSize)
+        FormularioLogin(navController = navController, viewModel = viewModel, modifier = Modifier.fillMaxWidth(1f), windowSize = windowSize, emailUsuario = emailUsuario, contrasena = contrasena
+        )
     }
 }
 
 @Composable
-fun InicioSesionMedium (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+fun InicioSesionMedium (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass, emailUsuario: MutableState<String>, contrasena: MutableState<String>) {
     Column(modifier = Modifier.fillMaxSize()) {
         Banner()
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 32.dp, vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -82,18 +87,20 @@ fun InicioSesionMedium (navController: NavController, viewModel: formularioUser,
                 navController = navController,
                 viewModel = viewModel,
                 modifier = Modifier.fillMaxWidth(1f
-            ),windowSize = windowSize)
+            ),windowSize = windowSize, emailUsuario = emailUsuario,
+            contrasena = contrasena)
         }
     }
 }
 
 @Composable
-fun InicioSesionExpanded (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
+fun InicioSesionExpanded (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass, emailUsuario: MutableState<String>, contrasena: MutableState<String>) {
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
                 .background(Color(16, 16, 15)),
             contentAlignment = Alignment.Center
         ) {
@@ -108,7 +115,7 @@ fun InicioSesionExpanded (navController: NavController, viewModel: formularioUse
             contentAlignment = Alignment.Center
         ) {
             FormularioLogin(navController = navController,
-                viewModel = viewModel, modifier = Modifier.fillMaxWidth(0.7f), windowSize = windowSize
+                viewModel = viewModel, modifier = Modifier.fillMaxWidth(0.7f), windowSize = windowSize, emailUsuario = emailUsuario, contrasena = contrasena
             )
         }
     }
@@ -138,16 +145,15 @@ private fun FormularioLogin(
     navController: NavController,
     viewModel: formularioUser,
     modifier: Modifier,
-    windowSize: WindowSizeClass
+    windowSize: WindowSizeClass,
+    emailUsuario: MutableState<String>,
+    contrasena: MutableState<String>
 ) {
+    val botonHabilitado = emailUsuario.value.isNotBlank() && contrasena.value.isNotBlank()
+    val validador = viewModel.login(emailUsuario.value, contrasena.value)
+    val usuarioInexistente = LocalContext.current
+
     if (windowSize.widthSizeClass == WindowWidthSizeClass.Medium) {
-
-        var emailUsuario by rememberSaveable { mutableStateOf("") }
-        var contrasena by rememberSaveable { mutableStateOf("") }
-        val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
-        val usuarioInexistente = LocalContext.current
-        val validador = viewModel.login(emailUsuario, contrasena)
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -156,8 +162,8 @@ private fun FormularioLogin(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = emailUsuario,
-                onValueChange = { emailUsuario = it },
+                value = emailUsuario.value,
+                onValueChange = { emailUsuario.value = it },
                 label = {Text("Escribe tu email o nombre de usuario", fontSize = 16.sp)},
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -173,8 +179,8 @@ private fun FormularioLogin(
             Spacer(modifier = Modifier.height(20.dp))
 
             TextField(
-                value = contrasena,
-                onValueChange = { contrasena = it },
+                value = contrasena.value,
+                onValueChange = { contrasena.value = it },
                 label = {Text("Contraseña", fontSize = 16.sp)},
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -246,13 +252,6 @@ private fun FormularioLogin(
         }
 
     } else {
-
-        var emailUsuario by rememberSaveable { mutableStateOf("") }
-        var contrasena by rememberSaveable { mutableStateOf("") }
-        val botonHabilitado = emailUsuario.isNotBlank() && contrasena.isNotBlank()
-        val usuarioInexistente = LocalContext.current
-        val validador = viewModel.login(emailUsuario, contrasena)
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -261,8 +260,8 @@ private fun FormularioLogin(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = emailUsuario,
-                onValueChange = { emailUsuario = it },
+                value = emailUsuario.value,
+                onValueChange = { emailUsuario.value = it },
                 label = { Text("Escribe tu email o nombre de usuario") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -278,8 +277,8 @@ private fun FormularioLogin(
             Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
-                value = contrasena,
-                onValueChange = { contrasena = it },
+                value = contrasena.value,
+                onValueChange = { contrasena.value = it },
                 label = { Text("Contraseña") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
