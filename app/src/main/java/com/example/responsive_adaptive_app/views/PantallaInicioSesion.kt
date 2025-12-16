@@ -38,6 +38,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.responsive_adaptive_app.viewModel.formularioUser
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.fillMaxHeight
 
 @Composable
 fun PantallaInicioSesion (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
@@ -51,27 +54,15 @@ fun PantallaInicioSesion (navController: NavController, viewModel: formularioUse
 
 @Composable
 fun InicioSesionCompacto (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp)
-                .background(Color(16, 16, 15))
-                .align(Alignment.TopCenter),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_app_responsive),
-                contentDescription = "Logo web",
-                modifier = Modifier
-                    .height(120.dp)
-                    .padding(bottom = 14.dp)
-            )
-        }
-
-
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Banner()
+        FormularioLogin(navController = navController, viewModel = viewModel, modifier = Modifier.fillMaxSize(1f))
     }
 }
 
@@ -82,7 +73,29 @@ fun InicioSesionMedium (navController: NavController, viewModel: formularioUser,
 
 @Composable
 fun InicioSesionExpanded (navController: NavController, viewModel: formularioUser, windowSize: WindowSizeClass) {
-
+    Row(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(Color(16, 16, 15)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_app_responsive),
+                contentDescription = "Logo",
+                modifier = Modifier.fillMaxWidth(0.6f)
+            )
+        }
+        Box(
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            FormularioLogin(navController = navController,
+                viewModel = viewModel, modifier = Modifier.fillMaxWidth(0.7f)
+            )
+        }
+    }
 }
 
 @Composable
@@ -115,8 +128,8 @@ private fun FormularioLogin(navController: NavController, viewModel: formularioU
     val validador = viewModel.login(emailUsuario, contrasena)
 
     Column (
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
