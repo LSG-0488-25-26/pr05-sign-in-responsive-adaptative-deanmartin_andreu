@@ -9,9 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaRegistroUsuario(navController: NavController) {
 
@@ -25,16 +27,22 @@ fun PantallaRegistroUsuario(navController: NavController) {
     var contrasena by remember { mutableStateOf("") }
     var confirmacionContrasena by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Registro de Usuario") })
+            TopAppBar(
+                title = { Text("Registro de Usuario") }
+            )
         }
-    ) { padding ->
+    ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+                .padding(paddingValues)
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
@@ -42,10 +50,12 @@ fun PantallaRegistroUsuario(navController: NavController) {
             OutlinedTextField(apellido, { apellido = it }, label = { Text("1º Apellido") })
             OutlinedTextField(segundoApellido, { segundoApellido = it }, label = { Text("2º Apellido") })
 
+
             OutlinedTextField(
                 value = fechaNacimiento,
                 onValueChange = { fechaNacimiento = it },
-                label = { Text("Fecha de nacimiento") }
+                label = { Text("Fecha de nacimiento") },
+                modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(email, { email = it }, label = { Text("Email") })
@@ -56,15 +66,26 @@ fun PantallaRegistroUsuario(navController: NavController) {
                 value = contrasena,
                 onValueChange = { contrasena = it },
                 label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = confirmacionContrasena,
                 onValueChange = { confirmacionContrasena = it },
                 label = { Text("Confirmar contraseña") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("CREAR CUENTA")
+            }
         }
     }
 }
