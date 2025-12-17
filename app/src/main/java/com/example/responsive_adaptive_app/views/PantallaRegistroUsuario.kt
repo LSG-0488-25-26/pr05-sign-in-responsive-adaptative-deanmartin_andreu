@@ -8,8 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+
 
 
 @Composable
@@ -18,8 +18,12 @@ fun PantallaRegistroUsuario(navController: NavController) {
     var nombre by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf("") }
     var segundoApellido by remember { mutableStateOf("") }
+    var fechaNacimiento by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
+    var nombreUsuario by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
+    var confirmacionContrasena by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -39,17 +43,27 @@ fun PantallaRegistroUsuario(navController: NavController) {
             OutlinedTextField(segundoApellido, { segundoApellido = it }, label = { Text("2º Apellido") })
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Correo electrónico") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                value = fechaNacimiento,
+                onValueChange = { fechaNacimiento = it },
+                label = { Text("Fecha de nacimiento") }
+            )
+
+            OutlinedTextField(email, { email = it }, label = { Text("Email") })
+            OutlinedTextField(telefono, { telefono = it }, label = { Text("Teléfono") })
+            OutlinedTextField(nombreUsuario, { nombreUsuario = it }, label = { Text("Usuario") })
+
+            OutlinedTextField(
+                value = contrasena,
+                onValueChange = { contrasena = it },
+                label = { Text("Contraseña") },
+                visualTransformation = PasswordVisualTransformation()
             )
 
             OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
-                label = { Text("Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                value = confirmacionContrasena,
+                onValueChange = { confirmacionContrasena = it },
+                label = { Text("Confirmar contraseña") },
+                visualTransformation = PasswordVisualTransformation()
             )
         }
     }
