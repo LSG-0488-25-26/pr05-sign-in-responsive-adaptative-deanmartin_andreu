@@ -1,21 +1,23 @@
 package com.example.responsive_adaptive_app.views
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.responsive_adaptive_app.model.Datos
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaRegistroUsuario(navController: NavController) {
+
+    val context = LocalContext.current
 
     var nombre by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf("") }
@@ -50,7 +52,6 @@ fun PantallaRegistroUsuario(navController: NavController) {
             OutlinedTextField(apellido, { apellido = it }, label = { Text("1º Apellido") })
             OutlinedTextField(segundoApellido, { segundoApellido = it }, label = { Text("2º Apellido") })
 
-
             OutlinedTextField(
                 value = fechaNacimiento,
                 onValueChange = { fechaNacimiento = it },
@@ -81,7 +82,27 @@ fun PantallaRegistroUsuario(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+
+                    val nuevoUsuario = Datos(
+                        nombre = nombre,
+                        apellido = apellido,
+                        segundoApellido = segundoApellido,
+                        fechaNacimiento = fechaNacimiento,
+                        email = email,
+                        telefono = telefono,
+                        nombreUsuario = nombreUsuario,
+                        contrasena = contrasena,
+                        confirmacionContrasena = confirmacionContrasena,
+                        terminosAceptados = false
+                    )
+
+                    Toast.makeText(
+                        context,
+                        "Usuario creado correctamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("CREAR CUENTA")
