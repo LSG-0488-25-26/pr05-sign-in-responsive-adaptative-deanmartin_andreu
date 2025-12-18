@@ -9,8 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,9 +17,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.responsive_adaptive_app.model.Datos
 import android.util.Patterns
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,9 +25,11 @@ import com.example.responsive_adaptive_app.viewModel.formularioUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaRegistroUsuario(navController: NavController) {
+fun PantallaRegistroUsuario(
+    navController: NavController,
+    formularioVM: formularioUser
+) {
     val context = LocalContext.current
-    val formularioVM: formularioUser = viewModel()
 
     var nombre by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf("") }
@@ -56,15 +54,11 @@ fun PantallaRegistroUsuario(navController: NavController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                }
             )
         }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -133,7 +127,7 @@ fun PantallaRegistroUsuario(navController: NavController) {
                 error = errores["telefono"]
             )
 
-            // Añadir nombre de usario en la app
+            // Añadir nombre de usuario en la app
             CustomTextField(
                 value = nombreUsuario,
                 onValueChange = { nombreUsuario = it },
@@ -164,18 +158,15 @@ fun PantallaRegistroUsuario(navController: NavController) {
 
             // Checkbox para aceptar los términos y condiciones
             Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = terminosAceptados,
                         onCheckedChange = { terminosAceptados = it }
                     )
-                    Text("Acepto los términos y condiciones", style = MaterialTheme.typography.bodyMedium)
+                    Text("Acepto los términos y condiciones")
                 }
                 errores["terminos"]?.let {
-                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 12.dp))
+                    Text(it, color = MaterialTheme.colorScheme.error)
                 }
             }
 
@@ -185,12 +176,12 @@ fun PantallaRegistroUsuario(navController: NavController) {
             Button(
                 onClick = {
                     val nuevosErrores = mutableMapOf<String, String>()
+
                     if (nombre.isBlank()) nuevosErrores["nombre"] = "Campo obligatorio"
                     if (apellido.isBlank()) nuevosErrores["apellido"] = "Campo obligatorio"
-                    if (fechaNacimiento.isBlank()) nuevosErrores["fecha"] = "Indica tu fecha de nacimiento"
+                    if (fechaNacimiento.isBlank()) nuevosErrores["fecha"] = "Indica tu fecha"
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) nuevosErrores["email"] = "Email no válido"
-                    if (telefono.isNotBlank() && telefono.length < 9) nuevosErrores["telefono"] = "Teléfono no válido"
-                    if (nombreUsuario.isBlank()) nuevosErrores["usuario"] = "Nombre de usuario requerido"
+                    if (nombreUsuario.isBlank()) nuevosErrores["usuario"] = "Usuario requerido"
                     if (contrasena.length < 6) nuevosErrores["contrasena"] = "Mínimo 6 caracteres"
                     if (contrasena != confirmacionContrasena) nuevosErrores["confirmacion"] = "No coinciden"
                     if (!terminosAceptados) nuevosErrores["terminos"] = "Debes aceptar los términos"
@@ -198,29 +189,20 @@ fun PantallaRegistroUsuario(navController: NavController) {
                     errores = nuevosErrores
 
                     if (nuevosErrores.isEmpty()) {
-                        // Guardamos usuario y contraseña en el ViewModel
+                        // Guardamos el usuario creado (ÚNICO)
                         formularioVM.registroUser(nombreUsuario, email, contrasena)
 
-                        // Mostrar Toast de éxito
                         Toast.makeText(context, "¡Cuenta creada con éxito!", Toast.LENGTH_LONG).show()
-
-                        // Volver a la pantalla de login una vez hecho el registro
                         navController.popBackStack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.DarkGray,
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.DarkGray,
-                    disabledContentColor = Color.LightGray
+                    contentColor = Color.White
                 )
             ) {
-                Text(
-                    text = "CREAR CUENTA",
-                    fontSize = 18.sp
-                )
+                Text("CREAR CUENTA", fontSize = 18.sp)
             }
         }
     }
@@ -243,19 +225,13 @@ fun CustomTextField(
             onValueChange = onValueChange,
             label = { Text(label) },
             leadingIcon = icon?.let { { Icon(it, contentDescription = null) } },
-            modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             isError = error != null,
             singleLine = true
         )
         if (error != null) {
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-            )
+            Text(text = error, color = MaterialTheme.colorScheme.error)
         }
     }
 }
