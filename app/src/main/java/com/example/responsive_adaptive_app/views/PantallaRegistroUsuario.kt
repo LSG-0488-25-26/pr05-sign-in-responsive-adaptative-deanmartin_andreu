@@ -21,11 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.responsive_adaptive_app.model.Datos
 import android.util.Patterns
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.responsive_adaptive_app.viewModel.formularioUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaRegistroUsuario(navController: NavController) {
     val context = LocalContext.current
+    val formularioVM: formularioUser = viewModel()
 
     var nombre by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf("") }
@@ -52,8 +58,9 @@ fun PantallaRegistroUsuario(navController: NavController) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -191,21 +198,10 @@ fun PantallaRegistroUsuario(navController: NavController) {
                     errores = nuevosErrores
 
                     if (nuevosErrores.isEmpty()) {
-                        // Creamos el objeto con los datos
-                        val nuevoUsuario = Datos(
-                            nombre = nombre,
-                            apellido = apellido,
-                            segundoApellido = segundoApellido,
-                            fechaNacimiento = fechaNacimiento,
-                            email = email,
-                            telefono = telefono,
-                            nombreUsuario = nombreUsuario,
-                            contrasena = contrasena,
-                            confirmacionContrasena = confirmacionContrasena,
-                            terminosAceptados = terminosAceptados
-                        )
+                        // Guardamos usuario y contraseña en el ViewModel
+                        formularioVM.registroUser(nombreUsuario, email, contrasena)
 
-                        // Mostrar Toast de éxito si se ha rellenado todo correctamente
+                        // Mostrar Toast de éxito
                         Toast.makeText(context, "¡Cuenta creada con éxito!", Toast.LENGTH_LONG).show()
 
                         // Volver a la pantalla de login una vez hecho el registro
@@ -213,9 +209,18 @@ fun PantallaRegistroUsuario(navController: NavController) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.DarkGray,
+                    disabledContentColor = Color.LightGray
+                )
             ) {
-                Text("CREAR CUENTA", modifier = Modifier.padding(8.dp))
+                Text(
+                    text = "CREAR CUENTA",
+                    fontSize = 18.sp
+                )
             }
         }
     }

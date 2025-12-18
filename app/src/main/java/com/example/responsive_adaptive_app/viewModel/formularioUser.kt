@@ -40,4 +40,11 @@ class formularioUser: ViewModel() {
             return false
         }
     }
+    fun registroUser(usuario: String, email: String, contrasena: String) {
+        _formulario.value = _formulario.value?.copy(
+            nombreUsuario = usuario,
+            email = email,
+            contrasena = contrasena
+        )
+    }
 }
