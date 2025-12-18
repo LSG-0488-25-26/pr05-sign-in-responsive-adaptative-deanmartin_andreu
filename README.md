@@ -38,5 +38,5 @@ Para cumplir con los requisitos del ejercicio, adaptamos las **medidas** y **dis
 
 ### Persistencia de datos
 Gracias al **`rememberSaveable`**, al girar la pantalla los datos colocados dentro de los componentes *TextField* **no se pierden**, de manera que el usuario no tenga que volver a repetir el proceso constantemente ni que pierda lo ya escrito.
-![Uploading Captura de pantalla 2025-12-18 a las 4.39.52 p. m..png…]()
+<img width="838" height="472" alt="Captura de pantalla 2025-12-18 a las 4 41 40 p  m" src="https://github.com/user-attachments/assets/393d25a5-4d43-42d8-a6f8-9f27fbcf0549" />
 
