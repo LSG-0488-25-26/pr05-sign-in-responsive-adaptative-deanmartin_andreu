@@ -25,16 +25,13 @@ fun PantallaConfirm(navController: NavController) {
             TopAppBar(
                 title = { Text("Inicio de Sesión", fontWeight = FontWeight.Bold) },
                 actions = {
+                    // Botón de cerrar sesión en la parte superior
                     IconButton(onClick = {
                         navController.navigate("login") {
                             popUpTo(0)
                         }
                     }) {
-                        Icon(
-                            Icons.Default.ExitToApp,
-                            contentDescription = "Cerrar Sesión",
-                            tint = Color.Black
-                        )
+                        Icon(Icons.Default.ExitToApp, contentDescription = "Cerrar Sesión", tint = Color.Black)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -48,13 +45,13 @@ fun PantallaConfirm(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // ✅ Scroll añadido
+                .verticalScroll(rememberScrollState()) // Scroll vertical
                 .padding(paddingValues)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
+            // Icono de éxito con el mismo estilo visual del proyecto
             Icon(
                 imageVector = Icons.Default.CheckCircle,
                 contentDescription = "Éxito",
@@ -75,24 +72,28 @@ fun PantallaConfirm(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Has iniciado sesión correctamente en la aplicación.",
+                text = "Has iniciado sesión correctamente en la aplicación. Ahora puedes acceder a todas las funcionalidades.",
                 fontSize = 16.sp,
                 color = Color.Gray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(48.dp))
 
+            // Botón principal con el estilo de la pantalla de registro
             Button(
-                onClick = { },
+                onClick = {
+                },
                 modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White
                 )
             ) {
                 Text(
-                    text = "CONTINUAR",
+                    text = "CONTINUAR AL PANEL",
                     modifier = Modifier.padding(8.dp),
                     fontWeight = FontWeight.Bold
                 )
@@ -100,11 +101,17 @@ fun PantallaConfirm(navController: NavController) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Botón secundario estilizado
             OutlinedButton(
                 onClick = {
                     navController.popBackStack()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium,
+                border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Black
+                )
             ) {
                 Text(
                     text = "VOLVER",
