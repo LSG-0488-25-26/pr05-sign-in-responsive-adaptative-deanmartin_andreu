@@ -1,8 +1,6 @@
 package com.example.responsive_adaptive_app.views
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ExitToApp
@@ -23,15 +21,26 @@ fun PantallaConfirm(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Inicio de Sesión", fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        text = "Inicio de Sesión",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 actions = {
                     // Botón de cerrar sesión en la parte superior
-                    IconButton(onClick = {
-                        navController.navigate("login") {
-                            popUpTo(0)
+                    IconButton(
+                        onClick = {
+                            navController.navigate("login") {
+                                popUpTo(0)
+                            }
                         }
-                    }) {
-                        Icon(Icons.Default.ExitToApp, contentDescription = "Cerrar Sesión", tint = Color.Black)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Cerrar Sesión",
+                            tint = Color.Black
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -42,15 +51,16 @@ fun PantallaConfirm(navController: NavController) {
         },
         containerColor = Color.White
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Scroll vertical
                 .padding(paddingValues)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
             // Icono de éxito con el mismo estilo visual del proyecto
             Icon(
                 imageVector = Icons.Default.CheckCircle,
@@ -81,7 +91,6 @@ fun PantallaConfirm(navController: NavController) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Botón principal con el estilo de la pantalla de registro
             Button(
                 onClick = {
                 },
@@ -101,7 +110,6 @@ fun PantallaConfirm(navController: NavController) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Botón secundario estilizado
             OutlinedButton(
                 onClick = {
                     navController.popBackStack()
