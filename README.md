@@ -55,4 +55,12 @@ Esta pantalla también incluye un botón secundario que permite volver a la pant
 
 Al pulsar el botón de registro, se comprueba que los datos introducidos sean correctos. Si la validación es correcta, la información del usuario se guarda y se redirige automáticamente a la pantalla de confirmación mediante la ruta correspondiente.
 
+## Pantalla de Confirmación
 
+La pantalla de confirmación se muestra cuando el usuario ha completado correctamente el proceso de registro.
+
+En esta vista se informa al usuario de que la cuenta ha sido creada con éxito mediante un mensaje claro y visible, proporcionando feedback inmediato sobre el estado del proceso.
+
+La pantalla incluye un botón principal que permite al usuario volver a la pantalla de inicio de sesión, donde podrá acceder utilizando las credenciales creadas durante el registro.
+
+<img width="358" height="802" alt="image" src="https://github.com/user-attachments/assets/cc574516-b810-4872-849b-d450853abfde" />
