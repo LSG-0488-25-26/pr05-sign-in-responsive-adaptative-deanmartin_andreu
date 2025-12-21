@@ -94,25 +94,6 @@ fun PantallaConfirm(navController: NavController) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            Button(
-                onClick = {
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "CONTINUAR AL PANEL",
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             OutlinedButton(
                 onClick = {
                     navController.popBackStack()

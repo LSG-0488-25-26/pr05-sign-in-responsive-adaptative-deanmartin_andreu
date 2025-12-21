@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                         PantallaInicioSesion(navigationController, formularioUsuario, windowSize)
                     }
                     composable(Routes.RegistroUsuario.route) {
-                        PantallaRegistroUsuario(navigationController, formularioUsuario)
+                        PantallaRegistroUsuario(navigationController, formularioUsuario, windowSize)
                     }
                     composable(Routes.Confirm.route) {
                         PantallaConfirm(navigationController)
