@@ -40,3 +40,19 @@ Para cumplir con los requisitos del ejercicio, adaptamos las **medidas** y **dis
 Gracias al **`rememberSaveable`**, al girar la pantalla los datos colocados dentro de los componentes *TextField* **no se pierden**, de manera que el usuario no tenga que volver a repetir el proceso constantemente ni que pierda lo ya escrito.
 <img width="838" height="472" alt="Captura de pantalla 2025-12-18 a las 4 41 40 p  m" src="https://github.com/user-attachments/assets/393d25a5-4d43-42d8-a6f8-9f27fbcf0549" />
 
+## Pantalla de Registro
+
+La pantalla de registro permite al usuario crear una nueva cuenta dentro de la aplicación. En esta vista se solicitan los datos necesarios para el alta del usuario, como el nombre de usuario, el email y la contraseña.
+
+Todos los campos son obligatorios, por lo que se aplican validaciones para asegurar que el usuario rellena correctamente el formulario antes de continuar. El botón principal de registro permanece deshabilitado hasta que los campos contienen información válida, evitando así registros incompletos.
+
+Esta pantalla también incluye un botón secundario que permite volver a la pantalla de inicio de sesión, facilitando la navegación en caso de que el usuario ya tenga una cuenta creada.
+
+<img width="357" height="797" alt="image" src="https://github.com/user-attachments/assets/9d8e12ac-1e7f-4f70-b820-e10454619a20" />
+<img width="352" height="795" alt="image" src="https://github.com/user-attachments/assets/9dcb2a4e-7be4-4adb-8138-111b2d05e8ea" />
+
+### Navegación y control de datos
+
+Al pulsar el botón de registro, se comprueba que los datos introducidos sean correctos. Si la validación es correcta, la información del usuario se guarda y se redirige automáticamente a la pantalla de confirmación mediante la ruta correspondiente.
+
+
