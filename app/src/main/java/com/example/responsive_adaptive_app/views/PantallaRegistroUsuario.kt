@@ -160,6 +160,7 @@ private fun RegistroTopBar(navController: NavController) {
     )
 }
 
+
 @Composable
 private fun RegistroUsuarioContent(
     navController: NavController,
@@ -180,8 +181,6 @@ private fun RegistroUsuarioContent(
     var confirmacionContrasena by rememberSaveable { mutableStateOf("") }
     var terminosAceptados by rememberSaveable { mutableStateOf(false) }
 
-    var errores by rememberSaveable { mutableStateOf<Map<String, String>>(emptyMap()) }
-
     val botonHabilitado =
         nombre.isNotBlank() &&
                 apellido.isNotBlank() &&
@@ -192,7 +191,7 @@ private fun RegistroUsuarioContent(
                 contrasena.isNotBlank() &&
                 confirmacionContrasena.isNotBlank() &&
                 terminosAceptados &&
-                Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                formularioVM.validarEmail(email) &&
                 contrasena.length >= 6 &&
                 contrasena == confirmacionContrasena &&
                 formularioVM.validarFecha(fechaNacimiento) == null &&
@@ -210,29 +209,26 @@ private fun RegistroUsuarioContent(
             value = nombre,
             onValueChange = { nombre = it },
             label = "Nombre",
-            icon = Icons.Default.Person,
-            error = errores["nombre"]
+            icon = Icons.Default.Person
         )
 
         CustomTextField(
             value = apellido,
             onValueChange = { apellido = it },
-            label = "1º Apellido",
-            error = errores["apellido"]
+            label = "Primer Apellido"
         )
 
         CustomTextField(
             value = segundoApellido,
             onValueChange = { segundoApellido = it },
-            label = "2º Apellido"
+            label = "Segundo Apellido"
         )
 
         CustomTextField(
             value = fechaNacimiento,
             onValueChange = { fechaNacimiento = it },
             label = "Fecha Nacimiento (DD/MM/AAAA)",
-            icon = Icons.Default.DateRange,
-            error = errores["fecha"]
+            icon = Icons.Default.DateRange
         )
 
         CustomTextField(
@@ -240,8 +236,7 @@ private fun RegistroUsuarioContent(
             onValueChange = { email = it },
             label = "Correo Electrónico",
             icon = Icons.Default.Email,
-            keyboardType = KeyboardType.Email,
-            error = errores["email"]
+            keyboardType = KeyboardType.Email
         )
 
         CustomTextField(
@@ -249,16 +244,14 @@ private fun RegistroUsuarioContent(
             onValueChange = { telefono = it },
             label = "Teléfono",
             icon = Icons.Default.Phone,
-            keyboardType = KeyboardType.Phone,
-            error = errores["telefono"]
+            keyboardType = KeyboardType.Phone
         )
 
         CustomTextField(
             value = nombreUsuario,
             onValueChange = { nombreUsuario = it },
             label = "Nombre de Usuario",
-            icon = Icons.Default.AccountCircle,
-            error = errores["usuario"]
+            icon = Icons.Default.AccountCircle
         )
 
         CustomTextField(
@@ -266,8 +259,7 @@ private fun RegistroUsuarioContent(
             onValueChange = { contrasena = it },
             label = "Contraseña",
             icon = Icons.Default.Lock,
-            isPassword = true,
-            error = errores["contrasena"]
+            isPassword = true
         )
 
         CustomTextField(
@@ -275,49 +267,27 @@ private fun RegistroUsuarioContent(
             onValueChange = { confirmacionContrasena = it },
             label = "Confirmar Contraseña",
             icon = Icons.Default.Lock,
-            isPassword = true,
-            error = errores["confirmacion"]
+            isPassword = true
         )
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = terminosAceptados,
-                    onCheckedChange = { terminosAceptados = it }
-                )
-                Text("Acepto los términos y condiciones", color = Color.Black)
-            }
-            errores["terminos"]?.let {
-                Text(it, color = MaterialTheme.colorScheme.error)
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = terminosAceptados,
+                onCheckedChange = { terminosAceptados = it }
+            )
+            Text("Acepto los términos y condiciones", color = Color.Black)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                val nuevosErrores = mutableMapOf<String, String>()
-
-                if (nombre.isBlank()) nuevosErrores["nombre"] = "Campo obligatorio"
-                if (apellido.isBlank()) nuevosErrores["apellido"] = "Campo obligatorio"
-                formularioVM.validarFecha(fechaNacimiento)?.let { nuevosErrores["fecha"] = it }
-                formularioVM.validarTelefono(telefono)?.let { nuevosErrores["telefono"] = it }
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) nuevosErrores["email"] = "Email no válido"
-                if (nombreUsuario.isBlank()) nuevosErrores["usuario"] = "Usuario requerido"
-                if (contrasena.length < 6) nuevosErrores["contrasena"] = "Mínimo 6 caracteres"
-                if (contrasena != confirmacionContrasena) nuevosErrores["confirmacion"] = "No coinciden"
-                if (!terminosAceptados) nuevosErrores["terminos"] = "Debes aceptar los términos"
-
-                errores = nuevosErrores
-
-                if (nuevosErrores.isEmpty()) {
-                    formularioVM.registroUser(nombreUsuario, email, contrasena)
-                    Toast.makeText(context, "¡Cuenta creada con éxito!", Toast.LENGTH_LONG).show()
-                    navController.popBackStack()
-                }
+                formularioVM.registroUser(nombreUsuario, email, contrasena)
+                Toast.makeText(context, "¡Cuenta creada con éxito!", Toast.LENGTH_LONG).show()
+                navController.popBackStack()
             },
             enabled = botonHabilitado,
             modifier = Modifier
@@ -335,7 +305,6 @@ private fun RegistroUsuarioContent(
         }
     }
 }
-
 @Composable
 fun CustomTextField(
     value: String,
@@ -344,32 +313,29 @@ fun CustomTextField(
     icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     modifier: Modifier = Modifier.fillMaxWidth(),
     isPassword: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    error: String? = null
+    keyboardType: KeyboardType = KeyboardType.Text
 ) {
-    Column(modifier = modifier.fillMaxWidth())  {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text(label, color = Color.Black) },
-            leadingIcon = icon?.let { { Icon(it, contentDescription = null, tint = Color.DarkGray) } },
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            isError = error != null,
-            singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.DarkGray,
-                cursorColor = Color.Black
-            )
+    OutlinedTextField(
+        modifier = modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label, color = Color.Black) },
+        leadingIcon = if (icon != null) {
+            { Icon(icon, contentDescription = null, tint = Color.DarkGray) }
+        } else {
+            null
+        },
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            focusedBorderColor = Color.Black,
+            unfocusedBorderColor = Color.DarkGray,
+            cursorColor = Color.Black
         )
-        if (error != null) {
-            Text(text = error, color = MaterialTheme.colorScheme.error)
-        }
-    }
+    )
 }

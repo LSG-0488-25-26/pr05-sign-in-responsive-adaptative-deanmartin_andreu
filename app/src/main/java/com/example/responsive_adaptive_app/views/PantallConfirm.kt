@@ -106,7 +106,7 @@ fun PantallaConfirm(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "VOLVER",
+                    text = "Volver",
                     modifier = Modifier.padding(8.dp)
                 )
             }
